@@ -72,7 +72,7 @@ struct ContentView: View {
                                         .frame(width: 50, height: 60)
                                         .background(GetTileColor(at: letterindex, InRow: Rowindex, letter: letter))
                                         .cornerRadius(4)
-                                        .border(Color.black, width: letter.isEmpty ? 1 : 0)
+                                        .border(Color.black, width: 1)
                                 }
                             }
                         }
@@ -213,7 +213,7 @@ struct ContentView: View {
                     }
                 }
             }
-
+            
         }
         
         func GetLetter(at index: Int, InRow row: Int) -> String
@@ -224,25 +224,28 @@ struct ContentView: View {
             return String(Guess[CharacterIndex])
         }
         func GetTileColor(at index: Int, InRow row: Int, letter: String) -> Color{
-            if !letter.isEmpty{
-                if row >= CurrentAttempts {
-                    return Color.clear
-                }
-                let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
-                
-                if letter == CorrectLetter {
-                    return .green
-                    
-                }
-                else if CorrectLetter.contains(letter) {
-                    return .yellow
-                }
-                else {
-                    return .gray
-                }
+            if row == CurrentAttempts && !GameOver {
+                return Color.clear }
+            
+            if Guesses[row] == SecretLandmark {
+                return .green
             }
-            return Color.clear
-        }
+                if !letter.isEmpty{
+                    let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
+                    
+                    if letter == CorrectLetter {
+                        return .green
+                        
+                    }
+                    else if CorrectLetter.contains(letter) {
+                        return .yellow
+                    }
+                    else {
+                        return .gray
+                    }
+                }
+        return Color.clear
+    }
         func HandleKeyPress(__ key: String ){
             guard !GameOver else {return}
             let CurrentGuess = Guesses[CurrentAttempts]
@@ -270,6 +273,7 @@ struct ContentView: View {
                 GameOver = true
                 GamesPlayed += 1
                 GamesWon += 1
+                
             }
             else if CurrentAttempts + 1 >= GameConfig.MaxAttempts {
                 GameOver = true
