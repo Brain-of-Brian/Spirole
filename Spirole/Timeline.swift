@@ -37,3 +37,5 @@
 // 8/5/2026 making guessing ascept
 // 8/5/2026 not using that SpiroleViewModel class since it had erors that can't even be fixed, I will work around it
 // 8/6/2026 Continuing to work on the guessing part of Spirole
+// 8/6/2026 finishing up the guessing part of spirole, adding the keyboard today
+// 8/6/2026 I will fix all of these errors and warnings
