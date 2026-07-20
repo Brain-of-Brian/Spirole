@@ -1,3 +1,5 @@
+// Spirole will be a game about landmarks
+
 import SwiftUI
 
 struct ContentView: View {
