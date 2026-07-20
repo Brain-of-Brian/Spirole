@@ -32,3 +32,4 @@
 // 8/4/2026 Rewriting all of Spirole
 // 8/5/2026 Fully restarting, I need to rewrite everything from scratch, I dont want to reuse anything since everytime I do, I get so many errors and they wont go away. I will only keep the colors.
 // 8/5/2026 This is a new beginning for Spirole
+// 8/5/2026 Adding the colors
