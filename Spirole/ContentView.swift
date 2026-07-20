@@ -3,15 +3,79 @@
 import SwiftUI
 import MapKit
 
+enum GameConfig {
+    static let WordLength = 5
+    static let MaxAttempts = 6
+    static let AvaliableLandmarks = ["Petra"].map{$0.uppercased()}
+}
+
+enum LandmarkStatus {
+    case empty, unused, wrong, misplaced, correct
+    
+    var BackgroundColor: Color {
+        switch self {
+            
+        case .empty:
+            return Color(.gray)
+        case .unused:
+            return Color(.systemGray5)
+        case .wrong:
+            return Color(.darkGray)
+        case .misplaced:
+            return Color(.yellow)
+        case.correct:
+            return Color(.green)
+        }
+    }
+    var TextColor: Color {
+        switch self {
+        case .empty:
+            return .primary
+        case .unused, .correct, .wrong, .misplaced:
+            return .white
+        }
+    }
+}
 struct ContentView: View {
+    @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
+    @State private var CurrentAttempts = 0
+    @State private var GameOver = false
+    @State private var GameWon = false
+    @State private var SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
+    
+    @AppStorage("GammesPlayed") var GamesPlayed = 0
+    @AppStorage("GammesWon") var GamesWon = 0
+    
+    
     @State private var InfoPopUp: Bool = false
     @State private var MapPopUp: Bool = false
     @State private var SettingsPopUp: Bool = false
+    
+    let KeyboardRows = [
+        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+        ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "⌫"]
+    ]
     var body: some View {
         ZStack {
             NavigationStack{
                 VStack{
-                    Text("placeholder")
+                    ForEach(0..<GameConfig.MaxAttempts, id: \.self) {Rowindex in
+                        HStack(spacing: 8){
+                            ForEach(0..<GameConfig.WordLength, id: \.self) {letterindex in
+                                let letter = GetLetter(at: letterindex, InRow: Rowindex)
+                                Text(letter)
+                                    .font(.title)
+                                    .bold()
+                                    .foregroundStyle(.black)
+                                    .frame(width: 50, height: 60)
+                                    .background(GetTileColor(at: letterindex, InRow: Rowindex, letter: letter))
+                                    .cornerRadius(4)
+                                .border(Color.black, width: letter.isEmpty ? 1 : 0)
+                            }
+                        }
+                    }
+
                 }
                 .padding()
                 .navigationViewStyle(.stack)
@@ -121,7 +185,76 @@ struct ContentView: View {
                 }
             }
         }
-    }
+        func GetLetter(at index: Int, InRow row: Int) -> String
+        {
+            let Guess = Guesses[row]
+            guard index < Guess.count else {return ""}
+            let CharacterIndex = Guess.index(Guess.startIndex, offsetBy: index)
+            return String(Guess[CharacterIndex])
+        }
+        func GetTileColor(at index: Int, InRow row: Int, letter: String) -> Color{
+            if letter.isEmpty{
+                if row >= CurrentAttempts {
+                    return Color.clear
+                }
+                let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
+                
+                if letter == CorrectLetter {
+                    return .green
+                    
+                }
+                else if CorrectLetter.contains(letter) {
+                    return .yellow
+                }
+                else {
+                    return .gray
+                }
+            }
+        }
+            func HandleKeyPress(__ key: String ){
+                guard !GameOver else {return}
+                let CurrentGuess = Guesses[CurrentAttempts]
+                
+                if key == "⌫" {
+                    if !CurrentGuess.isEmpty {
+                        Guesses[CurrentAttempts].removeLast()
+                    }
+                }
+                else if key == "ENTER"{
+                    if CurrentGuess.count == GameConfig.WordLength {
+                        SubmitGuess()
+                    }
+                }
+                else { if CurrentGuess.count < GameConfig.WordLength {                     Guesses[CurrentAttempts] += key
+                    
+                    }
+                }
+            }
+            func SubmitGuess() {
+                let FinalGuess = Guesses[CurrentAttempts]
+                
+                if FinalGuess == SecretLandmark {
+                    GameWon = true
+                    GameOver = true
+                    GamesPlayed += 1
+                    GamesWon += 1
+                }
+                else if CurrentAttempts + 1 >= GameConfig.MaxAttempts {
+                    GameOver = true
+                    GamesPlayed += 1
+                }
+                else {
+                    CurrentAttempts += 1
+                }
+            }
+            func ResetGame(){
+                Guesses = Array(repeating: "", count: GameConfig.MaxAttempts)
+                CurrentAttempts = 0
+                GameOver = false
+                GameWon = false
+                SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
+            }
+        }
 }
 #Preview {
     ContentView()

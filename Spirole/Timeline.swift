@@ -34,3 +34,6 @@
 // 8/5/2026 This is a new beginning for Spirole
 // 8/5/2026 Adding the colors
 // 8/5/2026 Adding the top bar of Spirole
+// 8/5/2026 making guessing ascept
+// 8/5/2026 not using that SpiroleViewModel class since it had erors that can't even be fixed, I will work around it
+// 8/6/2026 Continuing to work on the guessing part of Spirole
