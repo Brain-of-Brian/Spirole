@@ -38,9 +38,9 @@ enum LandmarkStatus {
 }
 struct ContentView: View {
     @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
-    @AppStorage private var("Current Attempts") private var CurrentAttempts = 0
-    @AppStorage private var("Game over") private var GameOver = false
-    @AppStorage private var ("Games Won") private var GameWon = false
+    @AppStorage("Current Attempts") private var CurrentAttempts = 0
+    @AppStorage("Game over") private var GameOver = false
+    @AppStorage("Games Won") private var GameWon = false
     @State private var SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
     
     @AppStorage("GammesPlayed") var GamesPlayed = 0
