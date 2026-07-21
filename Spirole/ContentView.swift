@@ -8,34 +8,6 @@ enum GameConfig {
     static let MaxAttempts = 6
     static let AvaliableLandmarks = ["Petra"].map{$0.uppercased()}
 }
-
-enum LandmarkStatus {
-    case empty, unused, wrong, misplaced, correct
-    
-    var BackgroundColor: Color {
-        switch self {
-            
-        case .empty:
-            return Color(.gray)
-        case .unused:
-            return Color(.systemGray5)
-        case .wrong:
-            return Color(.darkGray)
-        case .misplaced:
-            return Color(.yellow)
-        case.correct:
-            return Color(.green)
-        }
-    }
-    var TextColor: Color {
-        switch self {
-        case .empty:
-            return .primary
-        case .unused, .correct, .wrong, .misplaced:
-            return .white
-        }
-    }
-}
 struct ContentView: View {
     @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
     @AppStorage("Current Attempts") private var CurrentAttempts = 0
@@ -99,11 +71,15 @@ struct ContentView: View {
                                             .font(.headline)
                                             .bold()
                                             .frame(minWidth: Key.count > 1 ? 55: 32, minHeight: 45)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 4)
+                                                    .stroke(Color.black, lineWidth: 1))
                                     }
                                 }
                             }
                         }
                     }
+                    .padding(.bottom, 50)
                 }
                 .padding()
                 .navigationViewStyle(.stack)
@@ -198,7 +174,7 @@ struct ContentView: View {
                         Button {
                             
                         } label: {
-                            
+                            Text("Increased Contrast")
                         }
                         Button {
                             
@@ -213,7 +189,6 @@ struct ContentView: View {
                     }
                 }
             }
-            
         }
         
         func GetLetter(at index: Int, InRow row: Int) -> String

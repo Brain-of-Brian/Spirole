@@ -40,3 +40,4 @@
 // 8/6/2026 finishing up the guessing part of spirole, adding the keyboard today
 // 8/6/2026 I will fix all of these errors and warnings
 // 8/6/2026 I love the UI now but I still haven't fixed some small visual designs. I'll show them before I begin
+// 8/6/2026 using the main and secondary color palette for spirole
