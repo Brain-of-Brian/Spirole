@@ -4,19 +4,20 @@ import SwiftUI
 import MapKit
 
 enum GameConfig {
-    static let WordLength = 5
-    static let MaxAttempts = 6
+    static let WordLength: Int = 5
+    static let MaxAttempts: Int = 6
     static let AvaliableLandmarks = ["Petra"].map{$0.uppercased()}
 }
 struct ContentView: View {
     @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
     @AppStorage("Current Attempts") private var CurrentAttempts = 0
-    @AppStorage("Game over") private var GameOver = false
-    @AppStorage("Games Won") private var GameWon = false
+    @AppStorage("Game over") private var GameOver: Bool = false
+    @AppStorage("Games Won") private var GameWon: Bool = false
     @State private var SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
     
     @AppStorage("GammesPlayed") var GamesPlayed = 0
     @AppStorage("GammesWon") var GamesWon = 0
+    @State private var InvalidLandmark: Bool = false
     
     
     @State private var InfoPopUp: Bool = false
@@ -190,6 +191,16 @@ struct ContentView: View {
                 }
             }
         }
+        .alert("This landmark is not avaliable", isPresented: $InvalidLandmark){
+            Button{
+                
+            } label: {
+                Text( "Okay")
+            }
+        } message: {
+            Text("Please enter an avaliable landmark.\nYou can view avaliable landmarks in the 'landmarks' tab")
+        }
+        .multilineTextAlignment(.center)
         
         func GetLetter(at index: Int, InRow row: Int) -> String
         {
@@ -232,7 +243,12 @@ struct ContentView: View {
             }
             else if key == "ENTER"{
                 if CurrentGuess.count == GameConfig.WordLength {
-                    SubmitGuess()
+                    if GameConfig.AvaliableLandmarks.contains(CurrentGuess.uppercased()) {
+                        SubmitGuess()
+                    }
+                    else {
+                        InvalidLandmark = true
+                    }
                 }
             }
             else { if CurrentGuess.count < GameConfig.WordLength {                     Guesses[CurrentAttempts] += key
