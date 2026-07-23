@@ -6,23 +6,23 @@ import MapKit
 enum GameConfig {
     static let WordLength: Int = 5
     static let MaxAttempts: Int = 6
-    static let AvaliableLandmarks = ["Petra"].map{$0.uppercased()}
+    static let AvaliableLandmarks = ["Petra","Alamo", "Luxor", "Kyoto", "Tulum"].map{$0.uppercased()}
 }
 struct ContentView: View {
     @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
-    @AppStorage("Current Attempts") private var CurrentAttempts = 0
-    @AppStorage("Game over") private var GameOver: Bool = false
-    @AppStorage("Games Won") private var GameWon: Bool = false
+    @State private var CurrentAttempts = 0
+    @State private var GameOver: Bool = false
+    @State private var GameWon: Bool = false
     @State private var SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
     
-    @AppStorage("GammesPlayed") var GamesPlayed = 0
-    @AppStorage("GammesWon") var GamesWon = 0
+    @AppStorage("GamesPlayed") var GamesPlayed = 0
+    @AppStorage("GamesWon") var GamesWon = 0
     @State private var InvalidLandmark: Bool = false
     
     
-    @State private var InfoPopUp: Bool = false
-    @State private var MapPopUp: Bool = false
-    @State private var SettingsPopUp: Bool = false
+    @State private var InfoPopup: Bool = false
+    @State private var MapPopup: Bool = false
+    @State private var SettingsPopup: Bool = false
     
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -82,207 +82,244 @@ struct ContentView: View {
                     }
                     .padding(.bottom, 50)
                 }
-                .padding()
-                .navigationViewStyle(.stack)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
-                            InfoPopUp.toggle()
+                            InfoPopup.toggle()
                         } label: {
-                            Image(systemName: "info.circle")
+                            Image(systemName:"info.circle")
                         }
-                        
                     }
                     ToolbarItem(placement: .principal) {
                         Text("Spirole")
-                            .font(.title2)
                             .bold()
+                            .font(.title2)
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack{
+                        HStack {
                             Button {
-                                MapPopUp.toggle()
-                            } label: {
-                                Image(systemName: "map.fill")
-                            }
+                            MapPopup.toggle()
+                        } label: {
+                            Image(systemName:"map.fill")
+                        }
                             Button {
-                                SettingsPopUp.toggle()
+                                SettingsPopup.toggle()
                             } label: {
-                                Image(systemName: "gearshape.fill")
+                                Image(systemName:"gearshape.fill")
                             }
                         }
                     }
                 }
-                
             }
-            if InfoPopUp {
-                Color.black.opacity(0.2)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        InfoPopUp = false
-                    }
-                ZStack{
-                    RoundedRectangle(cornerRadius: 25)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(.horizontal, 50)
-                        .padding(.vertical, 100)
-                        .ignoresSafeArea()
-                    VStack(spacing: 5) {
-                        Text("What is Spirole?")
-                            .font(.title3)
-                            .bold()
-                        Text("Spirole is a game about discovering landmarks through guessing and map discoveries")
-                            .multilineTextAlignment(.center)
-                            .font(.default)
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.horizontal, 55)
-                    .padding(.vertical, 100)
-                }
+            .sheet(isPresented: $InfoPopup) {
+                InfoMenu()
+                    .presentationDetents([.medium])
+                    .presentationCornerRadius(25)
+                    .presentationDragIndicator(.visible)
             }
-            if MapPopUp {
-                Color.black.opacity(0.2)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        MapPopUp = false
-                    }
-                Map()
-                    .ignoresSafeArea()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .cornerRadius(25)
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 80)
+            .sheet(isPresented: $MapPopup) {
+                MapMenu()
+                    .presentationDetents([.medium])
+                    .presentationCornerRadius(25)
+                    .presentationDragIndicator(.visible)
             }
-            
-            if SettingsPopUp {
-                Color.black.opacity(0.2)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        SettingsPopUp = false
-                    }
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 25)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(.horizontal, 50)
-                        .padding(.vertical, 100)
-                        .ignoresSafeArea()
-                    VStack {
-                        Button {
-                            
-                        } label: {
-                            Text("Increased Contrast")
-                        }
-                        Button {
-                            
-                        } label: {
-                            
-                        }
-                        Button {
-                            
-                        } label: {
-                            
-                        }
-                    }
-                }
+            .sheet(isPresented: $SettingsPopup) {
+                SettingsMenu()
+                    .presentationDetents([.medium, .large])
+                    .presentationCornerRadius(25)
+                    .presentationDragIndicator(.visible)
             }
-        }
-        .alert("This landmark is not avaliable", isPresented: $InvalidLandmark){
-            Button{
-                
-            } label: {
-                Text( "Okay")
-            }
-        } message: {
-            Text("Please enter an avaliable landmark.\nYou can view avaliable landmarks in the 'landmarks' tab")
-        }
-        .multilineTextAlignment(.center)
-        
-        func GetLetter(at index: Int, InRow row: Int) -> String
-        {
-            let Guess = Guesses[row]
-            guard index < Guess.count else {return ""}
-            let CharacterIndex = Guess.index(Guess.startIndex, offsetBy: index)
-            return String(Guess[CharacterIndex])
-        }
-        func GetTileColor(at index: Int, InRow row: Int, letter: String) -> Color{
-            if row == CurrentAttempts && !GameOver {
-                return Color.clear }
-            
-            if Guesses[row] == SecretLandmark {
-                return .green
-            }
-                if !letter.isEmpty{
-                    let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
+            .alert("This landmark is not avaliable", isPresented: $InvalidLandmark){
+                Button{
                     
-                    if letter == CorrectLetter {
-                        return .green
-                        
-                    }
-                    else if CorrectLetter.contains(letter) {
-                        return .yellow
-                    }
-                    else {
-                        return .gray
-                    }
+                } label: {
+                    Text( "Okay")
                 }
-        return Color.clear
-    }
-        func HandleKeyPress(__ key: String ){
-            guard !GameOver else {return}
-            let CurrentGuess = Guesses[CurrentAttempts]
-            
-            if key == "⌫" {
-                if !CurrentGuess.isEmpty {
-                    Guesses[CurrentAttempts].removeLast()
-                }
+            } message: {
+                Text("Please enter an avaliable landmark.\nYou can view avaliable landmarks in the 'landmarks' tab")
             }
-            else if key == "ENTER"{
-                if CurrentGuess.count == GameConfig.WordLength {
-                    if GameConfig.AvaliableLandmarks.contains(CurrentGuess.uppercased()) {
-                        SubmitGuess()
-                    }
-                    else {
-                        InvalidLandmark = true
-                    }
-                }
-            }
-            else { if CurrentGuess.count < GameConfig.WordLength {                     Guesses[CurrentAttempts] += key
-                
-            }
-            }
+            .multilineTextAlignment(.center)
         }
-        func SubmitGuess() {
-            let FinalGuess = Guesses[CurrentAttempts]
+    }
+    
+    func GetLetter(at index: Int, InRow row: Int) -> String
+    {
+        let Guess = Guesses[row]
+        guard index < Guess.count else { return "" }
+        let CharacterIndex = Guess.index(Guess.startIndex, offsetBy: index)
+        return String(Guess[CharacterIndex])
+    }
+    func GetTileColor(at index: Int, InRow row: Int, letter: String) -> Color{
+        if row == CurrentAttempts && !GameOver {
+            return .clear }
+        
+        if Guesses[row] == SecretLandmark {
+            return .green
+        }
+        if !letter.isEmpty{
+            let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
             
-            if FinalGuess == SecretLandmark {
-                GameWon = true
-                GameOver = true
-                GamesPlayed += 1
-                GamesWon += 1
+            if letter == CorrectLetter {
+                return .green
                 
             }
-            else if CurrentAttempts + 1 >= GameConfig.MaxAttempts {
-                GameOver = true
-                GamesPlayed += 1
+            else if SecretLandmark.contains(letter) {
+            return .yellow
             }
             else {
-                CurrentAttempts += 1
+                return .gray
             }
         }
-        func ResetGame(){
-            Guesses = Array(repeating: "", count: GameConfig.MaxAttempts)
-            CurrentAttempts = 0
-            GameOver = false
-            GameWon = false
-            SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
+        return .clear
+    }
+    func HandleKeyPress(__ key: String ){
+        guard !GameOver else { return }
+        let CurrentGuess = Guesses[CurrentAttempts]
+        
+        if key == "⌫" {
+            if !CurrentGuess.isEmpty {
+                Guesses[CurrentAttempts].removeLast()
+            }
         }
+        else if key == "ENTER"{
+            if CurrentGuess.count == GameConfig.WordLength {
+                if GameConfig.AvaliableLandmarks.contains(CurrentGuess.uppercased()) {
+                    SubmitGuess()
+                }
+                else {
+                    InvalidLandmark = true
+                }
+            }
+        }
+        else { if CurrentGuess.count < GameConfig.WordLength {                     Guesses[CurrentAttempts] += key
+            
+        }
+        }
+    }
+    func SubmitGuess() {
+        let FinalGuess = Guesses[CurrentAttempts]
+        
+        if FinalGuess == SecretLandmark {
+            GameWon = true
+            GameOver = true
+            GamesPlayed += 1
+            GamesWon += 1
+            
+        }
+        else if CurrentAttempts + 1 >= GameConfig.MaxAttempts {
+            GameOver = true
+            GamesPlayed += 1
+        }
+        else {
+            CurrentAttempts += 1
+        }
+    }
+    func ResetGame(){
+        Guesses = Array(repeating: "", count: GameConfig.MaxAttempts)
+        CurrentAttempts = 0
+        GameOver = false
+        GameWon = false
+        SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
     }
 }
 #Preview {
     ContentView()
+}
+
+struct InfoMenu: View {
+    @Environment(\.dismiss) private var Close
+    var body: some View {
+        NavigationStack {
+            VStack{
+                Text("What is Spirole?")
+                    .font(.title3)
+                    .bold()
+                Text("Spirole is a game about discovering landmarks through guessing and map discoveries")
+                    .multilineTextAlignment(.center)
+                    .font(.default)
+                Spacer()
+            }
+            .padding()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button{
+                        Close()
+                    } label: {
+                        Text("Close")
+                            .bold()
+                            .font(.default)
+                    }
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    InfoMenu()
+}
+
+struct MapMenu: View {
+    @Environment( \.dismiss) private var Close
+    var body: some View {
+        NavigationStack {
+            Map()
+                .navigationTitle("Discovered Landmarks")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            Close()
+                        } label: {
+                            Text("Close")
+                                .bold()
+                                .font(.default)
+                        }
+                    }
+                }
+        }
+    }
+}
+
+#Preview {
+    MapMenu()
+}
+
+struct SettingsMenu: View {
+    @Environment(\.dismiss) private var Close
+    @AppStorage("Increased Contrast") private var IncreasedContrast = false
+    var body: some View {
+        NavigationStack {
+            List {
+                Section(header: Text("Accessibility")) {
+                    Toggle("Increase Contrast", isOn: $IncreasedContrast)
+                }
+                Section(header: Text("About")) {
+                    HStack{
+                        
+                    }
+                }
+                Section(header: Text("")) {
+                }
+            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button{
+                        Close()
+                    } label:{
+                        Text("Close")
+                            .bold()
+                            .font(.default)
+                    }
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    SettingsMenu()
 }

@@ -42,3 +42,5 @@
 // 8/6/2026 I love the UI now but I still haven't fixed some small visual designs. I'll show them before I begin
 // 8/6/2026 using the main and secondary color palette for spirole
 // 8/7/2026 I forgot to use the colors, I'll work on that later. I will work on the input for the guessing part of Spirole
+// 8/7/2026 Reworking the top bar items and their visual appearances.
+// 8/7/2026 Fixing all the errors and testing the new items

@@ -30,8 +30,10 @@
             filePath = "Spirole/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "289"
-            endingLineNumber = "289">
+            startingLineNumber = "229"
+            endingLineNumber = "229"
+            landmarkName = "InfoMenu"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
