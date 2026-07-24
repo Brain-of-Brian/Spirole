@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var CurrentAttempts = 0
     @State private var GameOver: Bool = false
     @State private var GameWon: Bool = false
-    @State private var SecretLandmark = GameConfig.AvaliableLandmarks.randomElement() ?? "SWIFT"
+    @State private var SecretLandmark = ""
     
     @AppStorage("GamesPlayed") var GamesPlayed = 0
     @AppStorage("GamesWon") var GamesWon = 0
@@ -156,10 +156,27 @@ struct ContentView: View {
         return Format.string(from: Date())
     }
     func DailySecretLandmark() -> String {
-        let today = TodayCDT()
         let landmarks = GameConfig.AvaliableLandmarks
-        let hash = abs(today.hashValue)
-        let index = hash % landmarks.count
+        guard !landmarks.isEmpty else { return "SWIFT"}
+        var calendar = Calendar.current
+        if let CstZone = TimeZone(identifier: "America/Chicago" ) {
+            calendar.timeZone = CstZone
+        }
+        var components = DateComponents()
+        components.year = 2026
+        components.month = 1
+        components.day = 1
+        //these are temp, will change on release
+        components.timeZone = calendar.timeZone
+        
+        guard let StartDate = calendar.date(from: components) else {
+            return landmarks[0]
+        }
+        let today = Date()
+        let DayCount = calendar.dateComponents([.day], from: StartDate, to: today).day ?? 0
+        let SafeDayCount = max(0, DayCount)
+        
+        let index = SafeDayCount % landmarks.count
         return landmarks[index]
     }
     func CheckDailyReset(){
@@ -169,7 +186,7 @@ struct ContentView: View {
         if LastPlayed == today {
             
             if !SavedGuesses.isEmpty {
-                Guesses = SavedGuesses.components(separatedBy: " , ")
+                Guesses = SavedGuesses.components(separatedBy: ", ")
             }
             CurrentAttempts = Guesses.filter { !$0.isEmpty }.count
             if Guesses.contains(SecretLandmark) {
@@ -248,7 +265,7 @@ struct ContentView: View {
     func SubmitGuess() {
         let FinalGuess = Guesses[CurrentAttempts]
         
-        SavedGuesses = Guesses.joined(separator: " , ")
+        SavedGuesses = Guesses.joined(separator: ",")
         LastPlayed = TodayCDT()
         
         if FinalGuess == SecretLandmark {
@@ -288,7 +305,7 @@ struct InfoMenu: View {
                     .bold()
                 Text("Spirole is a game about discovering landmarks through guessing and map discoveries")
                     .multilineTextAlignment(.center)
-                    .font(.default)
+                    .font(.body)
                 Spacer()
             }
             .padding()
@@ -299,7 +316,7 @@ struct InfoMenu: View {
                     } label: {
                         Text("Close")
                             .bold()
-                            .font(.default)
+                            .font(.body)
                     }
                 }
             }
@@ -325,7 +342,7 @@ struct MapMenu: View {
                         } label: {
                             Text("Close")
                                 .bold()
-                                .font(.default)
+                                .font(.body)
                         }
                     }
                 }

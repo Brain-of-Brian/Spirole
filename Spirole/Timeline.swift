@@ -46,3 +46,6 @@
 // 8/7/2026 Fixing all the errors and testing the new items
 // 8/7/2026 Making it so word resets at 12:00am everyday and is consistant when opening and reopening the app
 // 8/7/2026 Fixing small mistakes I missed
+// 8/8/2026 Testing if daily reset actually works. It's currently 12:01 AM
+// 8/8/2026 Rewriting the daily reset stuff since it doesn't translarte properly onto different devices.
+// 8/8/2026 Fixing two small issues and testing
