@@ -49,3 +49,4 @@
 // 8/8/2026 Testing if daily reset actually works. It's currently 12:01 AM
 // 8/8/2026 Rewriting the daily reset stuff since it doesn't translarte properly onto different devices.
 // 8/8/2026 Fixing two small issues and testing
+// 8/8/2026 Making it so you can drag map up and overall clean up the menu buttons and fixing one small error

@@ -26,6 +26,8 @@ struct ContentView: View {
     @AppStorage("Last played") private var LastPlayed: String = ""
     @AppStorage("Saved guesses") private var SavedGuesses: String = ""
     
+    @State private var MapDetent: PresentationDetent = .medium
+    
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -101,10 +103,10 @@ struct ContentView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         HStack {
                             Button {
-                            MapPopup.toggle()
-                        } label: {
-                            Image(systemName:"map.fill")
-                        }
+                                MapPopup.toggle()
+                            } label: {
+                                Image(systemName:"map.fill")
+                            }
                             Button {
                                 SettingsPopup.toggle()
                             } label: {
@@ -116,21 +118,12 @@ struct ContentView: View {
             }
             .sheet(isPresented: $InfoPopup) {
                 InfoMenu()
-                    .presentationDetents([.medium])
-                    .presentationCornerRadius(25)
-                    .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $MapPopup) {
                 MapMenu()
-                    .presentationDetents([.medium])
-                    .presentationCornerRadius(25)
-                    .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $SettingsPopup) {
                 SettingsMenu()
-                    .presentationDetents([.medium, .large])
-                    .presentationCornerRadius(25)
-                    .presentationDragIndicator(.visible)
             }
             .alert("This landmark is not avaliable", isPresented: $InvalidLandmark){
                 Button{
@@ -186,7 +179,7 @@ struct ContentView: View {
         if LastPlayed == today {
             
             if !SavedGuesses.isEmpty {
-                Guesses = SavedGuesses.components(separatedBy: ", ")
+                Guesses = SavedGuesses.components(separatedBy: ",")
             }
             CurrentAttempts = Guesses.filter { !$0.isEmpty }.count
             if Guesses.contains(SecretLandmark) {
@@ -223,6 +216,8 @@ struct ContentView: View {
             return .green
         }
         if !letter.isEmpty{
+            
+            guard index < SecretLandmark.count else { return .clear }
             let CorrectLetter = String(SecretLandmark[SecretLandmark.index(SecretLandmark.startIndex, offsetBy: index)])
             
             if letter == CorrectLetter {
@@ -230,7 +225,7 @@ struct ContentView: View {
                 
             }
             else if SecretLandmark.contains(letter) {
-            return .yellow
+                return .yellow
             }
             else {
                 return .gray
@@ -321,6 +316,9 @@ struct InfoMenu: View {
                 }
             }
         }
+        .presentationDetents([.medium])
+        .presentationCornerRadius(25)
+        .presentationDragIndicator(.visible)
     }
 }
 
@@ -330,23 +328,29 @@ struct InfoMenu: View {
 
 struct MapMenu: View {
     @Environment( \.dismiss) private var Close
+    @State var Detent: PresentationDetent = .medium
     var body: some View {
         NavigationStack {
             Map()
                 .navigationTitle("Discovered Landmarks")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            Close()
-                        } label: {
-                            Text("Close")
-                                .bold()
-                                .font(.body)
+                    if Detent == .large {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                Close()
+                            } label: {
+                                Text("Close")
+                                    .bold()
+                                    .font(.body)
+                            }
                         }
                     }
                 }
         }
+        .presentationDetents([.medium, .large], selection: $Detent)
+        .presentationCornerRadius(25)
+        .presentationDragIndicator(.visible)
     }
 }
 
@@ -357,6 +361,7 @@ struct MapMenu: View {
 struct SettingsMenu: View {
     @Environment(\.dismiss) private var Close
     @AppStorage("Increased Contrast") private var IncreasedContrast = false
+    @State var Detent: PresentationDetent = .medium
     var body: some View {
         NavigationStack {
             List {
@@ -374,17 +379,22 @@ struct SettingsMenu: View {
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button{
-                        Close()
-                    } label:{
-                        Text("Close")
-                            .bold()
-                            .font(.default)
+                if Detent == .large {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            Close()
+                        } label: {
+                            Text("Close")
+                                .bold()
+                                .font(.body)
+                        }
                     }
                 }
             }
         }
+        .presentationDetents([.medium, .large], selection: $Detent)
+        .presentationCornerRadius(25)
+        .presentationDragIndicator(.visible)
     }
 }
 
