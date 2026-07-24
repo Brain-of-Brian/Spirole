@@ -19,10 +19,12 @@ struct ContentView: View {
     @AppStorage("GamesWon") var GamesWon = 0
     @State private var InvalidLandmark: Bool = false
     
-    
     @State private var InfoPopup: Bool = false
     @State private var MapPopup: Bool = false
     @State private var SettingsPopup: Bool = false
+    
+    @AppStorage("Last played") private var LastPlayed: String = ""
+    @AppStorage("Saved guesses") private var SavedGuesses: String = ""
     
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -141,6 +143,52 @@ struct ContentView: View {
             }
             .multilineTextAlignment(.center)
         }
+        .onAppear {
+            CheckDailyReset()
+        }
+    }
+    func TodayCDT() -> String {
+        let Format = DateFormatter()
+        Format.dateFormat = "yyyy-MM-dd"
+        if let CstZone = TimeZone(identifier: "America/Chicago") {
+            Format.timeZone = CstZone
+        }
+        return Format.string(from: Date())
+    }
+    func DailySecretLandmark() -> String {
+        let today = TodayCDT()
+        let landmarks = GameConfig.AvaliableLandmarks
+        let hash = abs(today.hashValue)
+        let index = hash % landmarks.count
+        return landmarks[index]
+    }
+    func CheckDailyReset(){
+        let today = TodayCDT()
+        SecretLandmark = DailySecretLandmark()
+        
+        if LastPlayed == today {
+            
+            if !SavedGuesses.isEmpty {
+                Guesses = SavedGuesses.components(separatedBy: " , ")
+            }
+            CurrentAttempts = Guesses.filter { !$0.isEmpty }.count
+            if Guesses.contains(SecretLandmark) {
+                GameWon = true
+                GameOver = true
+            } else if CurrentAttempts >= GameConfig.MaxAttempts {
+                GameOver = true
+            }
+        }
+        else {
+            DailyReset()
+        }
+    }
+    func DailyReset() {
+        Guesses = Array(repeating: "", count: GameConfig.MaxAttempts)
+        CurrentAttempts = 0
+        GameOver = false
+        GameWon = false
+        SavedGuesses = ""
     }
     
     func GetLetter(at index: Int, InRow row: Int) -> String
@@ -199,6 +247,9 @@ struct ContentView: View {
     }
     func SubmitGuess() {
         let FinalGuess = Guesses[CurrentAttempts]
+        
+        SavedGuesses = Guesses.joined(separator: " , ")
+        LastPlayed = TodayCDT()
         
         if FinalGuess == SecretLandmark {
             GameWon = true

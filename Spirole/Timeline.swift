@@ -44,3 +44,5 @@
 // 8/7/2026 I forgot to use the colors, I'll work on that later. I will work on the input for the guessing part of Spirole
 // 8/7/2026 Reworking the top bar items and their visual appearances.
 // 8/7/2026 Fixing all the errors and testing the new items
+// 8/7/2026 Making it so word resets at 12:00am everyday and is consistant when opening and reopening the app
+// 8/7/2026 Fixing small mistakes I missed
