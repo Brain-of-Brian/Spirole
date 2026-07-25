@@ -50,3 +50,7 @@
 // 8/8/2026 Rewriting the daily reset stuff since it doesn't translarte properly onto different devices.
 // 8/8/2026 Fixing two small issues and testing
 // 8/8/2026 Making it so you can drag map up and overall clean up the menu buttons and fixing one small error
+// 8/8/2026 Adding the marker feature
+// 8/8/2026 The markers aren't working but I think I know why
+// 8/8/2026 Fixing the issue with the tabs
+// 8/8/2026 Deleting the tab view. I will make a custom one since I think the orignal one look a bit strange on Spirole

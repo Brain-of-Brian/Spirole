@@ -2,6 +2,7 @@
 
 import SwiftUI
 import MapKit
+import CoreLocation
 
 enum GameConfig {
     static let WordLength: Int = 5
@@ -74,6 +75,7 @@ struct ContentView: View {
                                     } label: {
                                         Text(Key)
                                             .font(.headline)
+                                            .foregroundStyle(.black)
                                             .bold()
                                             .frame(minWidth: Key.count > 1 ? 55: 32, minHeight: 45)
                                             .overlay(
@@ -120,7 +122,7 @@ struct ContentView: View {
                 InfoMenu()
             }
             .sheet(isPresented: $MapPopup) {
-                MapMenu()
+                MapMenu(GuessedLandmarks: Guesses.filter{!$0.isEmpty})
             }
             .sheet(isPresented: $SettingsPopup) {
                 SettingsMenu()
@@ -137,6 +139,7 @@ struct ContentView: View {
             .multilineTextAlignment(.center)
         }
         .onAppear {
+            LastPlayed = ""
             CheckDailyReset()
         }
     }
@@ -329,9 +332,25 @@ struct InfoMenu: View {
 struct MapMenu: View {
     @Environment( \.dismiss) private var Close
     @State var Detent: PresentationDetent = .medium
+    
+    let GuessedLandmarks: [String]
+    var DiscoveredPins: [Pin] {
+        GuessedLandmarks.compactMap {
+            name in
+            let upper = name.uppercased()
+            if let coordinate = Locations.coordinates[upper] {
+                return Pin(name: upper, coordinates: coordinate)
+            }
+            return nil
+        }
+    }
     var body: some View {
         NavigationStack {
-            Map()
+            Map() {
+                ForEach(DiscoveredPins) { pin in
+                    Marker(pin.name, coordinate: pin.coordinates)
+                }
+            }
                 .navigationTitle("Discovered Landmarks")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -355,7 +374,7 @@ struct MapMenu: View {
 }
 
 #Preview {
-    MapMenu()
+    MapMenu(GuessedLandmarks: ["Petra", "Luxor"])
 }
 
 struct SettingsMenu: View {
@@ -400,4 +419,38 @@ struct SettingsMenu: View {
 
 #Preview {
     SettingsMenu()
+}
+
+struct Pin: Identifiable {
+    let id = UUID()
+    let name: String
+    let coordinates: CLLocationCoordinate2D
+}
+
+struct Locations {
+    static let coordinates: [String: CLLocationCoordinate2D] = [
+                "PETRA": CLLocationCoordinate2D(latitude: 30.3285, longitude: 35.4444),
+                "ALAMO": CLLocationCoordinate2D(latitude: 29.4260, longitude: -98.4861),
+                "LUXOR": CLLocationCoordinate2D(latitude: 25.6989, longitude: 32.6421),
+                "KYOTO": CLLocationCoordinate2D(latitude: 35.0116, longitude: 135.7681),
+                "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
+    ]
+}
+
+struct LandmarkTab: View {
+    var body: some View {
+        Text("landmark test")
+    }
+}
+#Preview {
+    LandmarkTab()
+}
+
+struct LearningTab: View {
+    var body: some View {
+        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+    }
+}
+#Preview {
+    LearningTab()
 }
