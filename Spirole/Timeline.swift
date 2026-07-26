@@ -54,3 +54,7 @@
 // 8/8/2026 The markers aren't working but I think I know why
 // 8/8/2026 Fixing the issue with the tabs
 // 8/8/2026 Deleting the tab view. I will make a custom one since I think the orignal one look a bit strange on Spirole
+// 8/8/2026 Continuing to work on the custom tabs
+// 8/8/2026 Going back to regular tabs since the custom tabs look bad, then working on landmarks tab
+// 8/8/2026 Fixing the small errors since I took time to learn what happened
+// 8/8/2026 Fixing the menu buttons and group up code that is repeated

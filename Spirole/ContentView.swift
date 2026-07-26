@@ -9,8 +9,9 @@ enum GameConfig {
     static let MaxAttempts: Int = 6
     static let AvaliableLandmarks = ["Petra","Alamo", "Luxor", "Kyoto", "Tulum"].map{$0.uppercased()}
 }
+//Tab 1
 struct ContentView: View {
-    @State private var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
+    @Binding var Guesses: [String]
     @State private var CurrentAttempts = 0
     @State private var GameOver: Bool = false
     @State private var GameWon: Bool = false
@@ -20,9 +21,9 @@ struct ContentView: View {
     @AppStorage("GamesWon") var GamesWon = 0
     @State private var InvalidLandmark: Bool = false
     
-    @State private var InfoPopup: Bool = false
-    @State private var MapPopup: Bool = false
-    @State private var SettingsPopup: Bool = false
+    @Binding var InfoPopup: Bool
+    @Binding var MapPopup: Bool
+    @Binding var SettingsPopup: Bool
     
     @AppStorage("Last played") private var LastPlayed: String = ""
     @AppStorage("Saved guesses") private var SavedGuesses: String = ""
@@ -71,7 +72,7 @@ struct ContentView: View {
                             HStack {
                                 ForEach(Row, id: \.self){ Key in
                                     Button {
-                                        HandleKeyPress(__: Key)
+                                        HandleKeyPress(_: Key)
                                     } label: {
                                         Text(Key)
                                             .font(.headline)
@@ -117,15 +118,6 @@ struct ContentView: View {
                         }
                     }
                 }
-            }
-            .sheet(isPresented: $InfoPopup) {
-                InfoMenu()
-            }
-            .sheet(isPresented: $MapPopup) {
-                MapMenu(GuessedLandmarks: Guesses.filter{!$0.isEmpty})
-            }
-            .sheet(isPresented: $SettingsPopup) {
-                SettingsMenu()
             }
             .alert("This landmark is not avaliable", isPresented: $InvalidLandmark){
                 Button{
@@ -236,7 +228,7 @@ struct ContentView: View {
         }
         return .clear
     }
-    func HandleKeyPress(__ key: String ){
+    func HandleKeyPress(_ key: String ){
         guard !GameOver else { return }
         let CurrentGuess = Guesses[CurrentAttempts]
         
@@ -290,7 +282,7 @@ struct ContentView: View {
     }
 }
 #Preview {
-    ContentView()
+    ContentView(Guesses: .constant(Array(repeating: "", count: GameConfig.MaxAttempts)), InfoPopup: .constant(false), MapPopup: .constant(false), SettingsPopup: .constant(false))
 }
 
 struct InfoMenu: View {
@@ -436,21 +428,77 @@ struct Locations {
                 "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
     ]
 }
-
+// Tab 2
 struct LandmarkTab: View {
+    @Binding var InfoPopup: Bool
+    @Binding var SettingsPopup: Bool
     var body: some View {
-        Text("landmark test")
+        NavigationStack {
+            Text("landmark test")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            InfoPopup.toggle()
+                        } label: {
+                            Image(systemName:"info.circle")
+                        }
+                    }
+                    ToolbarItem(placement: .principal) {
+                        Text("Spirole")
+                            .bold()
+                            .font(.title2)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        HStack {
+                            Button {
+                                SettingsPopup.toggle()
+                            } label: {
+                                Image(systemName:"gearshape.fill")
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-}
 #Preview {
-    LandmarkTab()
+    LandmarkTab(InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
-
+// Tab 3
 struct LearningTab: View {
+    @Binding var InfoPopup: Bool
+    @Binding var SettingsPopup: Bool
     var body: some View {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+        NavigationStack {
+            Text("landmark test")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            InfoPopup.toggle()
+                        } label: {
+                            Image(systemName:"info.circle")
+                        }
+                    }
+                    ToolbarItem(placement: .principal) {
+                        Text("Spirole")
+                            .bold()
+                            .font(.title2)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        HStack {
+                            Button {
+                                SettingsPopup.toggle()
+                            } label: {
+                                Image(systemName:"gearshape.fill")
+                            }
+                        }
+                    }
+                }
+            }
     }
 }
 #Preview {
-    LearningTab()
+    LearningTab(InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }

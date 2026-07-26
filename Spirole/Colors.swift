@@ -1,5 +1,47 @@
 import SwiftUI
 
+struct TabManager: View {
+    @State private var Tab: Int = 0
+    @State var InfoPopup: Bool = false
+    @State var MapPopup: Bool = false
+    @State var SettingsPopup: Bool = false
+   
+    @State var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
+
+    var body: some View {
+        TabView {
+            ContentView(Guesses: $Guesses, InfoPopup: $InfoPopup, MapPopup: $MapPopup, SettingsPopup: $SettingsPopup)
+                .tabItem{
+                    Text("Spirole")
+                        .font(.title3)
+                }
+            LandmarkTab(InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+                .tabItem{
+                    Text("Landmarks")
+                        .font(.title)
+                }
+            LearningTab(InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+                .tabItem{
+                    Text("Learn")
+                        .font(.title)
+                }
+        }
+        .sheet(isPresented: $InfoPopup) {
+            InfoMenu()
+        }
+        .sheet(isPresented: $MapPopup) {
+            MapMenu(GuessedLandmarks: Guesses.filter{!$0.isEmpty})
+        }
+        .sheet(isPresented: $SettingsPopup) {
+            SettingsMenu()
+        }
+    }
+}
+
+#Preview {
+    TabManager()
+}
+
 extension Color {
     struct MainPalette {
         static let DeepOcean = Color(red: 0/255, green: 48/255, blue: 73/255)
@@ -13,7 +55,7 @@ extension Color {
         static let DeepMaroon = Color(red: 120/255, green: 0/255, blue: 0/255)
         static let MidnightNavy = Color(red: 60/255, green: 24/255, blue: 36/255)
     }
-
+    
     struct SecondaryPalette {
         static let LightMist = Color(red: 239/255, green: 241/255, blue: 237/255)
         static let PaleSage = Color(red: 213/255, green: 216/255, blue: 188/255)
@@ -31,7 +73,7 @@ extension Color {
             static let Misplaced = Color(red: 120/255, green: 172/255, blue: 204/255)
             static let Wrong = Color(red: 214/255, green: 45/255, blue: 58/255)
             static let Unused = Color(red: 194/255, green: 184/255, blue: 176/255)
-
+            
         }
     }
 }

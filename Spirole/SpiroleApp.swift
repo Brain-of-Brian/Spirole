@@ -4,7 +4,7 @@ import SwiftUI
 struct SpiroleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabManager()
         }
     }
 }
