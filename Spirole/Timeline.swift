@@ -42,3 +42,20 @@
 // 8/6/2026 I love the UI now but I still haven't fixed some small visual designs. I'll show them before I begin
 // 8/6/2026 using the main and secondary color palette for spirole
 // 8/7/2026 I forgot to use the colors, I'll work on that later. I will work on the input for the guessing part of Spirole
+// 8/7/2026 Reworking the top bar items and their visual appearances.
+// 8/7/2026 Fixing all the errors and testing the new items
+// 8/7/2026 Making it so word resets at 12:00am everyday and is consistant when opening and reopening the app
+// 8/7/2026 Fixing small mistakes I missed
+// 8/8/2026 Testing if daily reset actually works. It's currently 12:01 AM
+// 8/8/2026 Rewriting the daily reset stuff since it doesn't translarte properly onto different devices.
+// 8/8/2026 Fixing two small issues and testing
+// 8/8/2026 Making it so you can drag map up and overall clean up the menu buttons and fixing one small error
+// 8/8/2026 Adding the marker feature
+// 8/8/2026 The markers aren't working but I think I know why
+// 8/8/2026 Fixing the issue with the tabs
+// 8/8/2026 Deleting the tab view. I will make a custom one since I think the orignal one look a bit strange on Spirole
+// 8/8/2026 Continuing to work on the custom tabs
+// 8/8/2026 Going back to regular tabs since the custom tabs look bad, then working on landmarks tab
+// 8/8/2026 Fixing the small errors since I took time to learn what happened
+// 8/8/2026 Fixing the menu buttons and group up code that is repeated
+// 8/8/2026 Making the info menu better
