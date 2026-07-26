@@ -30,6 +30,8 @@ struct ContentView: View {
     
     @State private var MapDetent: PresentationDetent = .medium
     
+    @Binding var InfoTab: Int
+
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -94,6 +96,7 @@ struct ContentView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             InfoPopup.toggle()
+                            InfoTab = 0
                         } label: {
                             Image(systemName:"info.circle")
                         }
@@ -282,21 +285,33 @@ struct ContentView: View {
     }
 }
 #Preview {
-    ContentView(Guesses: .constant(Array(repeating: "", count: GameConfig.MaxAttempts)), InfoPopup: .constant(false), MapPopup: .constant(false), SettingsPopup: .constant(false))
+    ContentView(Guesses: .constant(Array(repeating: "", count: GameConfig.MaxAttempts)), InfoPopup: .constant(false), MapPopup: .constant(false), SettingsPopup: .constant(false), InfoTab: .constant(0))
 }
 
 struct InfoMenu: View {
     @Environment(\.dismiss) private var Close
+    @Binding var InfoTab: Int
     var body: some View {
         NavigationStack {
             VStack{
-                Text("What is Spirole?")
-                    .font(.title3)
-                    .bold()
-                Text("Spirole is a game about discovering landmarks through guessing and map discoveries")
-                    .multilineTextAlignment(.center)
-                    .font(.body)
-                Spacer()
+                if InfoTab == 0 {
+                    Text("What is Spirole?")
+                        .font(.title3)
+                        .bold()
+                    Text("Spirole is a game about discovering landmarks through guessing and map discoveries")
+                        .multilineTextAlignment(.center)
+                        .font(.body)
+                }
+                else if InfoTab == 1 {
+                    Text("Landmark Info")
+                        .font(.title3)
+                        .bold()
+                }
+                else if InfoTab == 2 {
+                    Text("Learning info")
+                        .font(.title3)
+                        .bold()
+                }
             }
             .padding()
             .toolbar {
@@ -318,7 +333,7 @@ struct InfoMenu: View {
 }
 
 #Preview {
-    InfoMenu()
+    InfoMenu(InfoTab: .constant(0))
 }
 
 struct MapMenu: View {
@@ -430,6 +445,7 @@ struct Locations {
 }
 // Tab 2
 struct LandmarkTab: View {
+    @Binding var InfoTab: Int
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     var body: some View {
@@ -440,6 +456,7 @@ struct LandmarkTab: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             InfoPopup.toggle()
+                            InfoTab = 1
                         } label: {
                             Image(systemName:"info.circle")
                         }
@@ -463,10 +480,11 @@ struct LandmarkTab: View {
         }
     }
 #Preview {
-    LandmarkTab(InfoPopup: .constant(false), SettingsPopup: .constant(false))
+    LandmarkTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
 // Tab 3
 struct LearningTab: View {
+    @Binding var InfoTab: Int
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     var body: some View {
@@ -477,6 +495,7 @@ struct LearningTab: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             InfoPopup.toggle()
+                            InfoTab = 2
                         } label: {
                             Image(systemName:"info.circle")
                         }
@@ -500,5 +519,5 @@ struct LearningTab: View {
     }
 }
 #Preview {
-    LearningTab(InfoPopup: .constant(false), SettingsPopup: .constant(false))
+    LearningTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }

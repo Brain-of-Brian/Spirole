@@ -7,27 +7,28 @@ struct TabManager: View {
     @State var SettingsPopup: Bool = false
    
     @State var Guesses: [String] = Array(repeating: "", count: GameConfig.MaxAttempts)
-
+    @State var InfoTab: Int = 0
+    
     var body: some View {
         TabView {
-            ContentView(Guesses: $Guesses, InfoPopup: $InfoPopup, MapPopup: $MapPopup, SettingsPopup: $SettingsPopup)
+            ContentView(Guesses: $Guesses, InfoPopup: $InfoPopup, MapPopup: $MapPopup, SettingsPopup: $SettingsPopup, InfoTab:$InfoTab)
                 .tabItem{
                     Text("Spirole")
                         .font(.title3)
                 }
-            LandmarkTab(InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+            LandmarkTab(InfoTab: $InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
                 .tabItem{
                     Text("Landmarks")
                         .font(.title)
                 }
-            LearningTab(InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+            LearningTab(InfoTab:$InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
                 .tabItem{
                     Text("Learn")
                         .font(.title)
                 }
         }
         .sheet(isPresented: $InfoPopup) {
-            InfoMenu()
+            InfoMenu(InfoTab: $InfoTab)
         }
         .sheet(isPresented: $MapPopup) {
             MapMenu(GuessedLandmarks: Guesses.filter{!$0.isEmpty})
