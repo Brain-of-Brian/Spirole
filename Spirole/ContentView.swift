@@ -31,7 +31,7 @@ struct ContentView: View {
     @State private var MapDetent: PresentationDetent = .medium
     
     @Binding var InfoTab: Int
-
+    
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -291,6 +291,7 @@ struct ContentView: View {
 struct InfoMenu: View {
     @Environment(\.dismiss) private var Close
     @Binding var InfoTab: Int
+    @State var Detent: PresentationDetent = .medium
     var body: some View {
         NavigationStack {
             VStack{
@@ -326,7 +327,7 @@ struct InfoMenu: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large], selection: $Detent)
         .presentationCornerRadius(25)
         .presentationDragIndicator(.visible)
     }
@@ -358,21 +359,21 @@ struct MapMenu: View {
                     Marker(pin.name, coordinate: pin.coordinates)
                 }
             }
-                .navigationTitle("Discovered Landmarks")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    if Detent == .large {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                Close()
-                            } label: {
-                                Text("Close")
-                                    .bold()
-                                    .font(.body)
-                            }
+            .navigationTitle("Discovered Landmarks")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if Detent == .large {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            Close()
+                        } label: {
+                            Text("Close")
+                                .bold()
+                                .font(.body)
                         }
                     }
                 }
+            }
         }
         .presentationDetents([.medium, .large], selection: $Detent)
         .presentationCornerRadius(25)
@@ -436,31 +437,31 @@ struct Pin: Identifiable {
 
 struct Locations {
     static let coordinates: [String: CLLocationCoordinate2D] = [
-                "PETRA": CLLocationCoordinate2D(latitude: 30.3285, longitude: 35.4444),
-                "ALAMO": CLLocationCoordinate2D(latitude: 29.4260, longitude: -98.4861),
-                "LUXOR": CLLocationCoordinate2D(latitude: 25.6989, longitude: 32.6421),
-                "KYOTO": CLLocationCoordinate2D(latitude: 35.0116, longitude: 135.7681),
-                "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
+        "PETRA": CLLocationCoordinate2D(latitude: 30.3285, longitude: 35.4444),
+        "ALAMO": CLLocationCoordinate2D(latitude: 29.4260, longitude: -98.4861),
+        "LUXOR": CLLocationCoordinate2D(latitude: 25.6989, longitude: 32.6421),
+        "KYOTO": CLLocationCoordinate2D(latitude: 35.0116, longitude: 135.7681),
+        "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
     ]
 }
 // Tab 2
-struct LandmarkTab: View {
+struct Passport: View {
     @Binding var InfoTab: Int
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
+    
+    @State private var Countries: [String] = ["United States", "United Kingdom", "China", "France", "Spain"]
     var body: some View {
         NavigationStack {
             VStack {
-                ForEach(GameConfig.AvaliableLandmarks, id: \.self){ Landmark in
-                    VStack(spacing: 5) {
-                        HStack {
-                            Spacer()
-                            Text(Landmark)
-                                .font(.title3)
-                                .padding(.horizontal)
-                                .padding(.horizontal)
+                List {
+                    ForEach(Countries, id: \.self){ country in
+                        Button {
+                            
+                        } label: {
+                            Text(country)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 120)
+                        .frame(width: 351, height: 247)
                         .overlay{
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.black, lineWidth: 2)
@@ -468,74 +469,77 @@ struct LandmarkTab: View {
                         .padding(.horizontal)
                     }
                 }
+                
             }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        InfoPopup.toggle()
+                        InfoTab = 2
+                    } label: {
+                        Image(systemName:"info.circle")
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Spirole")
+                        .bold()
+                        .font(.title2)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
                         Button {
-                            InfoPopup.toggle()
-                            InfoTab = 1
+                            SettingsPopup.toggle()
                         } label: {
-                            Image(systemName:"info.circle")
+                            Image(systemName:"gearshape.fill")
                         }
                     }
-                    ToolbarItem(placement: .principal) {
-                        Text("Spirole")
-                            .bold()
-                            .font(.title2)
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack {
-                            Button {
-                                SettingsPopup.toggle()
-                            } label: {
-                                Image(systemName:"gearshape.fill")
-                            }
-                        }
-                    }
+                }
             }
         }
     }
 }
 #Preview {
-    LandmarkTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
+    Passport(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
 // Tab 3
-struct LearningTab: View {
+struct Trivia: View {
     @Binding var InfoTab: Int
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     var body: some View {
         NavigationStack {
-            Text("landmark test")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+            VStack {
+                
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        InfoPopup.toggle()
+                        InfoTab = 2
+                    } label: {
+                        Image(systemName:"info.circle")
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Spirole")
+                        .bold()
+                        .font(.title2)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
                         Button {
-                            InfoPopup.toggle()
-                            InfoTab = 2
+                            SettingsPopup.toggle()
                         } label: {
-                            Image(systemName:"info.circle")
-                        }
-                    }
-                    ToolbarItem(placement: .principal) {
-                        Text("Spirole")
-                            .bold()
-                            .font(.title2)
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack {
-                            Button {
-                                SettingsPopup.toggle()
-                            } label: {
-                                Image(systemName:"gearshape.fill")
-                            }
+                            Image(systemName:"gearshape.fill")
                         }
                     }
                 }
             }
+        }
     }
 }
 #Preview {
-    LearningTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
+    Trivia(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
