@@ -59,3 +59,4 @@
 // 8/8/2026 Fixing the small errors since I took time to learn what happened
 // 8/8/2026 Fixing the menu buttons and group up code that is repeated
 // 8/8/2026 Making the info menu better
+// 8/9/2026 Today I'll be working on putting good descriptions for the info menu on each tab and trying to finish the landmarks tab

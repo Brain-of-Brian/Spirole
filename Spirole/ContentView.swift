@@ -303,7 +303,7 @@ struct InfoMenu: View {
                         .font(.body)
                 }
                 else if InfoTab == 1 {
-                    Text("Landmark Info")
+                    Text("Review your landmarks")
                         .font(.title3)
                         .bold()
                 }
@@ -450,7 +450,25 @@ struct LandmarkTab: View {
     @Binding var SettingsPopup: Bool
     var body: some View {
         NavigationStack {
-            Text("landmark test")
+            VStack {
+                ForEach(GameConfig.AvaliableLandmarks, id: \.self){ Landmark in
+                    VStack(spacing: 5) {
+                        HStack {
+                            Spacer()
+                            Text(Landmark)
+                                .font(.title3)
+                                .padding(.horizontal)
+                                .padding(.horizontal)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 120)
+                        .overlay{
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.black, lineWidth: 2)
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -475,10 +493,10 @@ struct LandmarkTab: View {
                             }
                         }
                     }
-                }
             }
         }
     }
+}
 #Preview {
     LandmarkTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
