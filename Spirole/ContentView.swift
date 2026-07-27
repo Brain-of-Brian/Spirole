@@ -450,49 +450,55 @@ struct Passport: View {
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     
-    @State private var Countries: [String] = ["United States", "United Kingdom", "China", "France", "Spain"]
+    let Countries: [String] = ["USA", "UK", "China", "France", "Spain"]
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(Countries, id: \.self){ country in
+                    ForEach(Countries.sorted(), id: \.self){ Country in
                         Button {
                             
                         } label: {
-                            Text(country)
+                            ZStack {
+                                Text(Country)
+                                    .foregroundStyle(.white)
+                                    .font(.largeTitle)
+                                
+                                Image(Country)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 351, height: 247)
+                                    .cornerRadius(25)
+                            }
                         }
-                        .frame(width: 351, height: 247)
-                        .overlay{
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.black, lineWidth: 2)
-                        }
-                        .padding(.horizontal)
                     }
+                    
+                    .padding(.horizontal)
                 }
-                
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+            
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    InfoPopup.toggle()
+                    InfoTab = 2
+                } label: {
+                    Image(systemName:"info.circle")
+                }
+            }
+            ToolbarItem(placement: .principal) {
+                Text("Spirole")
+                    .bold()
+                    .font(.title2)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack {
                     Button {
-                        InfoPopup.toggle()
-                        InfoTab = 2
+                        SettingsPopup.toggle()
                     } label: {
-                        Image(systemName:"info.circle")
-                    }
-                }
-                ToolbarItem(placement: .principal) {
-                    Text("Spirole")
-                        .bold()
-                        .font(.title2)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack {
-                        Button {
-                            SettingsPopup.toggle()
-                        } label: {
-                            Image(systemName:"gearshape.fill")
-                        }
+                        Image(systemName:"gearshape.fill")
                     }
                 }
             }
