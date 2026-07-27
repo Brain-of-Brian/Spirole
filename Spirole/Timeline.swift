@@ -59,3 +59,8 @@
 // 8/8/2026 Fixing the small errors since I took time to learn what happened
 // 8/8/2026 Fixing the menu buttons and group up code that is repeated
 // 8/8/2026 Making the info menu better
+// 8/9/2026 Today I'll be working on putting good descriptions for the info menu on each tab and trying to finish the landmarks tab
+// 8/9/2026 Working on the learning tab
+// 8/9/2026 Changing Landmarks and learning tab into a new concept
+// 8/9/2026 I imported some images that I will be using to make the passport tab better
+// 8/9/2026 Making the name of the country visible

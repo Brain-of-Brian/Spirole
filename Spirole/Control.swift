@@ -16,14 +16,14 @@ struct TabManager: View {
                     Text("Spirole")
                         .font(.title3)
                 }
-            LandmarkTab(InfoTab: $InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+            Passport(InfoTab:$InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
                 .tabItem{
-                    Text("Landmarks")
+                    Text("Passport")
                         .font(.title)
                 }
-            LearningTab(InfoTab:$InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
+            Trivia(InfoTab: $InfoTab, InfoPopup: $InfoPopup, SettingsPopup: $SettingsPopup)
                 .tabItem{
-                    Text("Learn")
+                    Text("Trivia")
                         .font(.title)
                 }
         }

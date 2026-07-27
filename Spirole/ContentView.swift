@@ -31,7 +31,7 @@ struct ContentView: View {
     @State private var MapDetent: PresentationDetent = .medium
     
     @Binding var InfoTab: Int
-
+    
     let KeyboardRows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -291,6 +291,7 @@ struct ContentView: View {
 struct InfoMenu: View {
     @Environment(\.dismiss) private var Close
     @Binding var InfoTab: Int
+    @State var Detent: PresentationDetent = .medium
     var body: some View {
         NavigationStack {
             VStack{
@@ -303,7 +304,7 @@ struct InfoMenu: View {
                         .font(.body)
                 }
                 else if InfoTab == 1 {
-                    Text("Landmark Info")
+                    Text("Review your landmarks")
                         .font(.title3)
                         .bold()
                 }
@@ -326,7 +327,7 @@ struct InfoMenu: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large], selection: $Detent)
         .presentationCornerRadius(25)
         .presentationDragIndicator(.visible)
     }
@@ -358,21 +359,21 @@ struct MapMenu: View {
                     Marker(pin.name, coordinate: pin.coordinates)
                 }
             }
-                .navigationTitle("Discovered Landmarks")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    if Detent == .large {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                Close()
-                            } label: {
-                                Text("Close")
-                                    .bold()
-                                    .font(.body)
-                            }
+            .navigationTitle("Discovered Landmarks")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if Detent == .large {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            Close()
+                        } label: {
+                            Text("Close")
+                                .bold()
+                                .font(.body)
                         }
                     }
                 }
+            }
         }
         .presentationDetents([.medium, .large], selection: $Detent)
         .presentationCornerRadius(25)
@@ -436,88 +437,123 @@ struct Pin: Identifiable {
 
 struct Locations {
     static let coordinates: [String: CLLocationCoordinate2D] = [
-                "PETRA": CLLocationCoordinate2D(latitude: 30.3285, longitude: 35.4444),
-                "ALAMO": CLLocationCoordinate2D(latitude: 29.4260, longitude: -98.4861),
-                "LUXOR": CLLocationCoordinate2D(latitude: 25.6989, longitude: 32.6421),
-                "KYOTO": CLLocationCoordinate2D(latitude: 35.0116, longitude: 135.7681),
-                "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
+        "PETRA": CLLocationCoordinate2D(latitude: 30.3285, longitude: 35.4444),
+        "ALAMO": CLLocationCoordinate2D(latitude: 29.4260, longitude: -98.4861),
+        "LUXOR": CLLocationCoordinate2D(latitude: 25.6989, longitude: 32.6421),
+        "KYOTO": CLLocationCoordinate2D(latitude: 35.0116, longitude: 135.7681),
+        "TULUM": CLLocationCoordinate2D(latitude: 20.2114, longitude: -87.4654)
     ]
 }
 // Tab 2
-struct LandmarkTab: View {
+struct Passport: View {
+    @Binding var InfoTab: Int
+    @Binding var InfoPopup: Bool
+    @Binding var SettingsPopup: Bool
+    
+    let Countries: [String] = ["USA", "United Kingdom", "China", "France", "Spain"]
+    var body: some View {
+        NavigationStack {
+            VStack {
+                List {
+                    ForEach(Countries.sorted(), id: \.self){ Country in
+                        Button {
+                        } label: {
+                            ZStack {
+                                Image(Country)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 351, height: 247)
+                                    .cornerRadius(25)
+                                VStack {
+                                    HStack {
+                                        Text(Country)
+                                            .foregroundStyle(.white)
+                                            .font(.largeTitle)
+                                            .bold()
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal)
+                                    .padding(.horizontal)
+                                    Spacer()
+                                }
+                                .padding(.vertical)
+                            }
+                        }
+                    }
+                    
+                    .padding(.horizontal)
+                }
+            }
+            
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    InfoPopup.toggle()
+                    InfoTab = 2
+                } label: {
+                    Image(systemName:"info.circle")
+                }
+            }
+            ToolbarItem(placement: .principal) {
+                Text("Spirole")
+                    .bold()
+                    .font(.title2)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack {
+                    Button {
+                        SettingsPopup.toggle()
+                    } label: {
+                        Image(systemName:"gearshape.fill")
+                    }
+                }
+            }
+        }
+    }
+}
+#Preview {
+    Passport(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
+}
+// Tab 3
+struct Trivia: View {
     @Binding var InfoTab: Int
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     var body: some View {
         NavigationStack {
-            Text("landmark test")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+            VStack {
+                
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        InfoPopup.toggle()
+                        InfoTab = 2
+                    } label: {
+                        Image(systemName:"info.circle")
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Spirole")
+                        .bold()
+                        .font(.title2)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
                         Button {
-                            InfoPopup.toggle()
-                            InfoTab = 1
+                            SettingsPopup.toggle()
                         } label: {
-                            Image(systemName:"info.circle")
-                        }
-                    }
-                    ToolbarItem(placement: .principal) {
-                        Text("Spirole")
-                            .bold()
-                            .font(.title2)
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack {
-                            Button {
-                                SettingsPopup.toggle()
-                            } label: {
-                                Image(systemName:"gearshape.fill")
-                            }
+                            Image(systemName:"gearshape.fill")
                         }
                     }
                 }
             }
         }
     }
-#Preview {
-    LandmarkTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
-}
-// Tab 3
-struct LearningTab: View {
-    @Binding var InfoTab: Int
-    @Binding var InfoPopup: Bool
-    @Binding var SettingsPopup: Bool
-    var body: some View {
-        NavigationStack {
-            Text("landmark test")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            InfoPopup.toggle()
-                            InfoTab = 2
-                        } label: {
-                            Image(systemName:"info.circle")
-                        }
-                    }
-                    ToolbarItem(placement: .principal) {
-                        Text("Spirole")
-                            .bold()
-                            .font(.title2)
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack {
-                            Button {
-                                SettingsPopup.toggle()
-                            } label: {
-                                Image(systemName:"gearshape.fill")
-                            }
-                        }
-                    }
-                }
-            }
-    }
 }
 #Preview {
-    LearningTab(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
+    Trivia(InfoTab: .constant(0), InfoPopup: .constant(false), SettingsPopup: .constant(false))
 }
