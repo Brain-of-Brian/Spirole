@@ -450,25 +450,33 @@ struct Passport: View {
     @Binding var InfoPopup: Bool
     @Binding var SettingsPopup: Bool
     
-    let Countries: [String] = ["USA", "UK", "China", "France", "Spain"]
+    let Countries: [String] = ["USA", "United Kingdom", "China", "France", "Spain"]
     var body: some View {
         NavigationStack {
             VStack {
                 List {
                     ForEach(Countries.sorted(), id: \.self){ Country in
                         Button {
-                            
                         } label: {
                             ZStack {
-                                Text(Country)
-                                    .foregroundStyle(.white)
-                                    .font(.largeTitle)
-                                
                                 Image(Country)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 351, height: 247)
                                     .cornerRadius(25)
+                                VStack {
+                                    HStack {
+                                        Text(Country)
+                                            .foregroundStyle(.white)
+                                            .font(.largeTitle)
+                                            .bold()
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal)
+                                    .padding(.horizontal)
+                                    Spacer()
+                                }
+                                .padding(.vertical)
                             }
                         }
                     }
